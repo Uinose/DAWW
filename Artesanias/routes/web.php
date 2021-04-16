@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {return view('index');});
-Route::get('/admin', function () {return view('admin.index');});
-Route::get('/admin/usuarios', function () {return view('admin.users');});
-Route::get('/admin/productos', function () {return view('admin.productos');});
+
 Route::get('/producto/{id}/{nombre}', function ($id,$nombre) {
     return view('verproducto')->with('id',$id)->with('nombre',$nombre);
 });
@@ -29,4 +27,13 @@ Route::get('/contacto',
                 ->with('nombre', $contacto)
                 ->with('valores', $valores)
                 ->with('fondo', $color);
+});
+Route::group(['prefix'=>'admin','as'=>'admin.'], function(){
+    Route::get('/', function () {return view('admin.index');});
+    Route::get('/usuarios', [App\Http\Controllers\Admin\UsuariosController::class, 'index']);
+    //importar
+    Route::get('/productos', [App\Http\Controllers\Admin\ProductosController::class, 'index']);
+    //habilita las funciones
+    Route::resource('productos',App\Http\Controllers\Admin\ProductosController::class);
+    Route::resource('usuarios',App\Http\Controllers\Admin\UsuariosController::class);
 });
